@@ -13,6 +13,8 @@
 		A0F0091E1EF32A6900D023F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0F0091C1EF32A6900D023F6 /* Main.storyboard */; };
 		A0F009201EF32A6900D023F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0F0091F1EF32A6900D023F6 /* Assets.xcassets */; };
 		A0F009231EF32A6900D023F6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0F009211EF32A6900D023F6 /* LaunchScreen.storyboard */; };
+		E41D0D631EF484FF00A8CF26 /* OpenSkyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */; };
+		E41D0D641EF484FF00A8CF26 /* OpenSkyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		A0F0091F1EF32A6900D023F6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0F009221EF32A6900D023F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A0F009241EF32A6900D023F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSkyRequest.swift; sourceTree = "<group>"; };
+		E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSkyState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,7 @@
 		A0F009171EF32A6900D023F6 /* GoogleMapsAPI */ = {
 			isa = PBXGroup;
 			children = (
+				E41D0D651EF4852100A8CF26 /* models */,
 				A0F009181EF32A6900D023F6 /* AppDelegate.swift */,
 				A0F0091A1EF32A6900D023F6 /* ViewController.swift */,
 				A0F0091C1EF32A6900D023F6 /* Main.storyboard */,
@@ -86,6 +91,15 @@
 				0EF5217AB09423F54F27C0C9 /* Pods-GoogleMapsAPI.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		E41D0D651EF4852100A8CF26 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */,
+				E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */,
+			);
+			name = models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,8 +225,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E41D0D631EF484FF00A8CF26 /* OpenSkyRequest.swift in Sources */,
 				A0F0091B1EF32A6900D023F6 /* ViewController.swift in Sources */,
 				A0F009191EF32A6900D023F6 /* AppDelegate.swift in Sources */,
+				E41D0D641EF484FF00A8CF26 /* OpenSkyState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +394,7 @@
 				A0F009291EF32A6900D023F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
