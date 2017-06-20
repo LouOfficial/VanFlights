@@ -10,35 +10,40 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
+
 class ViewController: UIViewController {
 
     override func loadView() {
-       
-        // Create a GMSCameraPosition that tells the map to display position
-        let camera = GMSCameraPosition.camera(withLatitude: 49.2827, longitude: -123.1207, zoom: 10.0)
-        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //          Create a GMSCameraPosition that tells the map to display Vancouver position.
+        let camera = GMSCameraPosition.camera(withLatitude: 49.2827, longitude: -123.1207, zoom: 11.0)
+        let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        mapView.isMyLocationEnabled = true
         view = mapView
         
-        // Creates a marker in the center of the map.
+        //          Creates a marker in the center of the map.
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: 49.2827, longitude: -123.1207)
         marker.title = "Vancouver"
         marker.snippet = "Canada"
         marker.map = mapView
+        navigationItem.title = "Hello VanFlight"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Print", style: .plain, target: self, action: #selector(test))
+        //        create compass button
+        mapView.settings.compassButton = true
         
         // Create my location button
         mapView.settings.myLocationButton = true
         
+        // animate zoom
         mapView.animate(toZoom: 12)
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    @IBAction func fetch_touchUpInside(_ sender: UIButton) {
-        
+    func test() {
         print("loading...")
         
         let req = OpenSkyRequest()
@@ -63,12 +68,5 @@ class ViewController: UIViewController {
             print("\(s.originCountry) (Unknown place)")
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 
