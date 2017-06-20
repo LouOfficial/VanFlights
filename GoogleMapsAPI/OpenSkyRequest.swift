@@ -9,7 +9,10 @@
 import Foundation
 
 class OpenSkyRequest {
-    func fetch(completionHandler: @escaping ([OpenSkyState]?, URLResponse?, Error?) -> Void) {
+    
+    let range = 10.0
+    
+    func fetch(coordination: [Double], completionHandler: @escaping ([OpenSkyState]?, URLResponse?, Error?) -> Void) {
         var req = URLRequest(url: URL(string: "https://opensky-network.org/api/states/all")!)
         req.httpMethod = "GET"
         
@@ -20,7 +23,7 @@ class OpenSkyRequest {
             }
             
             do {
-                let states = try self.pickUpData(from: data)
+                let states = try self.pickUpData(from: data, near: coordination)
                 completionHandler(states, res, nil)
             } catch let err {
                 completionHandler(nil, res, err)
@@ -28,18 +31,26 @@ class OpenSkyRequest {
         }.resume()
     }
     
-    func pickUpData(from data: Data?) throws -> [OpenSkyState] {
+    func pickUpData(from data: Data?, near coordination: [Double]) throws -> [OpenSkyState] {
         var states = [OpenSkyState]()
         
         let json = try JSONSerialization.jsonObject(with: data!, options:.allowFragments) as! [String : AnyObject]
         if let stateList = json["states"] as? [[Any]] {
             for row in stateList {
-                if let state = OpenSkyState.from(array: row) {
-                    print("yay \(state.originCountry)")
-                    states.append(state)
+                let state = OpenSkyState.from(array: row)
+                if state != nil && isOpenSkyState(state!, near: coordination) {
+                    states.append(state!)
                 }
             }
         }
         return states
+    }
+    
+    func isOpenSkyState(_ state: OpenSkyState, near coordination: [Double]) -> Bool {
+        if let lat = state.latitude, let long = state.longitude {
+            let a = abs(lat - coordination[0]) + abs(long - coordination[1])
+            return a < range
+        }
+        return false
     }
 }

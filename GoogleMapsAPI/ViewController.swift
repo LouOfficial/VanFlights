@@ -47,12 +47,13 @@ class ViewController: UIViewController {
         print("loading...")
         
         let req = OpenSkyRequest()
-        req.fetch() {data, res, err in
+        req.fetch(coordination: [49.2827, -123.1207]) {data, res, err in
             if err != nil {
                 print("ERR \(err!)")
                 return
             }
             
+            print("There are \(data?.count ?? 0) airplane(s) near here!")
             for s in data! {
                 self.printState(s)
             }
