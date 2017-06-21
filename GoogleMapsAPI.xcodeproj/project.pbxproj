@@ -15,6 +15,7 @@
 		A0F009231EF32A6900D023F6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0F009211EF32A6900D023F6 /* LaunchScreen.storyboard */; };
 		E41D0D631EF484FF00A8CF26 /* OpenSkyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */; };
 		E41D0D641EF484FF00A8CF26 /* OpenSkyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */; };
+		E4C6F90F1EF9E27E0023B124 /* AirlineCallsignMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C6F90E1EF9E27E0023B124 /* AirlineCallsignMatcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		A0F009241EF32A6900D023F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSkyRequest.swift; sourceTree = "<group>"; };
 		E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSkyState.swift; sourceTree = "<group>"; };
+		E4C6F90E1EF9E27E0023B124 /* AirlineCallsignMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirlineCallsignMatcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 			children = (
 				E41D0D611EF484FF00A8CF26 /* OpenSkyRequest.swift */,
 				E41D0D621EF484FF00A8CF26 /* OpenSkyState.swift */,
+				E4C6F90E1EF9E27E0023B124 /* AirlineCallsignMatcher.swift */,
 			);
 			name = models;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E41D0D631EF484FF00A8CF26 /* OpenSkyRequest.swift in Sources */,
+				E4C6F90F1EF9E27E0023B124 /* AirlineCallsignMatcher.swift in Sources */,
 				A0F0091B1EF32A6900D023F6 /* ViewController.swift in Sources */,
 				A0F009191EF32A6900D023F6 /* AppDelegate.swift in Sources */,
 				E41D0D641EF484FF00A8CF26 /* OpenSkyState.swift in Sources */,
