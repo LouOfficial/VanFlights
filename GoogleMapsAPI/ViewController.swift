@@ -48,6 +48,7 @@ class ViewController: UIViewController {
                     let newFlight = GMSMarker(position: planePosition)
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
+                    newFlight.rotation = s.heading!
                     newFlight.map = mapView
                     
                     self.buildPath(state: s)
