@@ -13,7 +13,7 @@ class OpenSkyTrack {
     var callsign: String?
     var startTime: Double
     var endTime: Double
-    var path: [[Double]]
+    var path: [[Double]]  // [[time, latitude, longitude, altitude, heading]]
     
     init(icao24: String, callsign: String?, startTime: Double, endTime: Double, path: [[Double]]) {
         self.icao24 = icao24
@@ -23,3 +23,4 @@ class OpenSkyTrack {
         self.path = path
     }
 }
+
