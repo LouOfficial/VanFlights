@@ -51,6 +51,7 @@ class OpenSkyState {
     let velocity: Double?
     let heading: Double?
     let verticalRate: Double?
+    let airline: String?
 
     init(icao24: String, callsign: String?, originCountry: String, timePosition: Double?, timeVelocity: Double?, longitude: Double?, latitude: Double?, altitude: Double?, onGround: Bool, velocity: Double?, heading: Double?, verticalRate: Double?) {
         self.icao24 = icao24
@@ -65,5 +66,12 @@ class OpenSkyState {
         self.velocity = velocity
         self.heading = heading
         self.verticalRate = verticalRate
+        
+        if callsign != nil {
+            airline = AirlineCallsignMatcher.findBy(callsign: callsign!)
+        }
+        else {
+            airline = nil
+        }
     }
 }

@@ -104,12 +104,29 @@ class ViewController: UIViewController {
 
     
     func printState(_ s: OpenSkyState) {
+        var message = s.originCountry
+        
         if let long = s.longitude, let lat = s.latitude {
-            print("\(s.originCountry) [\(long),\(lat)]")
+            message += " [\(long),\(lat)]"
         }
         else {
-            print("\(s.originCountry) (Unknown place)")
+            message += " (Unknown place)"
         }
+        
+        if let a = s.airline {
+            message += " by \(a)"
+        }
+        else {
+            message += " by Unknown Airline"
+            
+            if let c = s.callsign {
+                if !c.isEmpty {
+                    message += " (\(c))"
+                }
+            }
+        }
+        
+        print(message)
     }
 }
 
