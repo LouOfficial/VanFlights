@@ -50,12 +50,14 @@ class AirlineCallsignMatcher {
         "WJA": "WestJet",
         ]
     
-    static func findBy(callsign: String) -> String? {
-        if callsign.characters.count > 3 {
-            let index = callsign.index(callsign.startIndex, offsetBy: 3)
-            let prefix = callsign.substring(to: index)
-            if let name = dictionary[prefix] {
-                return name
+    static func findBy(callsign: String?) -> String? {
+        if let c = callsign {
+            if c.characters.count > 3 {
+                let index = c.index(c.startIndex, offsetBy: 3)
+                let prefix = c.substring(to: index)
+                if let name = dictionary[prefix] {
+                    return name
+                }
             }
         }
         

@@ -67,11 +67,6 @@ class OpenSkyState {
         self.heading = heading
         self.verticalRate = verticalRate
         
-        if callsign != nil {
-            airline = AirlineCallsignMatcher.findBy(callsign: callsign!)
-        }
-        else {
-            airline = nil
-        }
+        airline = AirlineCallsignMatcher.findBy(callsign: callsign)
     }
 }
