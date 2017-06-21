@@ -10,6 +10,8 @@ import Foundation
 import GoogleMaps
 
 class Flight {
+    static let normalStrokecolor = UIColor(colorLiteralRed: 0.3, green: 0.5, blue: 1.0, alpha: 0.5)
+    
     let icao24: String
     var path = [[Double]]()
     var marker = GMSMarker()
@@ -30,6 +32,8 @@ class Flight {
     
     init(icao24: String) {
         self.icao24 = icao24
+        
+        line.strokeColor = Flight.normalStrokecolor
     }
     
     func initPath(_ coordinations: [[Double]]) {
