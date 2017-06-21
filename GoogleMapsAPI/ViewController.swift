@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
+    var mapView: GMSMapView?
+    
     override func loadView() {
         
     }
@@ -26,7 +28,8 @@ class ViewController: UIViewController {
         
         //          Create a GMSCameraPosition that tells the map to display Vancouver position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
-        let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        self.mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        let mapView = self.mapView!
         mapView.isMyLocationEnabled = true
         view = mapView
         print("loading...")
@@ -47,7 +50,7 @@ class ViewController: UIViewController {
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.map = mapView
                     
-                    self.drawPath(icao24: s.icao24)
+                    self.buildPath(state: s)
                 }
             }
             
@@ -101,12 +104,28 @@ class ViewController: UIViewController {
 //        }
     }
     
-    func drawPath(icao24: String) {
-        req.fetchDetailBy(icao24: icao24) {data, res, err in
-            if let track = data {
-                print("Detail for the first item: \(track.icao24)")
+    func buildPath(state: OpenSkyState) {
+        req.fetchDetailBy(icao24: state.icao24) {data, res, err in
+            if let track = data, let lat = state.latitude, let long = state.longitude {
+                DispatchQueue.main.async {
+                    var coordinations = [[Double]]()
+                    for i in track.path {
+                        coordinations.append([i[1], i[2]])
+                    }
+                    coordinations.append([lat, long])
+                    self.drawPath(state: state, coordinations: coordinations)
+                }
             }
         }
+    }
+    
+    func drawPath(state: OpenSkyState, coordinations: [[Double]]) {
+        let path = GMSMutablePath()
+        for coordination in coordinations {
+            path.add(CLLocationCoordinate2D(latitude: coordination[0], longitude: coordination[1]))
+        }
+        let polyline = GMSPolyline(path: path)
+        polyline.map = self.mapView
     }
 }
 
