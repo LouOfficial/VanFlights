@@ -18,6 +18,8 @@ class ViewController: UIViewController {
     let req = OpenSkyRequest()
     
     var mapView: GMSMapView?
+    var markers = [String: GMSMarker]()
+    var timerUpdateFlights = Timer()
     
     override func loadView() {
         
@@ -51,6 +53,8 @@ class ViewController: UIViewController {
                     newFlight.rotation = s.heading!
                     newFlight.map = mapView
                     
+                    self.markers[s.icao24] = newFlight
+                    
                     self.buildPath(state: s)
                 }
             }
@@ -80,6 +84,8 @@ class ViewController: UIViewController {
         
         // animate zoom
         mapView.animate(toZoom: 12)
+        
+        startUpdateFlightTimer()
     }
     func test() {
         print("button")
@@ -103,6 +109,26 @@ class ViewController: UIViewController {
 //                print("the \(newFlight) is here")
 //            }
 //        }
+    }
+    
+    func startUpdateFlightTimer() {
+        stopUpdateFlightTimer()
+        
+        timerUpdateFlights = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(updateFlights), userInfo: nil, repeats: true)
+    }
+    
+    func stopUpdateFlightTimer() {
+        timerUpdateFlights.invalidate()
+    }
+    
+    func updateFlights() {
+        print("updateFlights")
+        for (icao24, marker) in markers {
+            // TODO
+            print(icao24)
+            marker.position.latitude += 0.0
+            marker.position.longitude += 0.0
+        }
     }
     
     func buildPath(state: OpenSkyState) {
