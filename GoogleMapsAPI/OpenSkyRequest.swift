@@ -53,4 +53,43 @@ class OpenSkyRequest {
         }
         return false
     }
+    
+    func fetchDetailBy(icao24: String, completionHandler: @escaping (OpenSkyTrack?, URLResponse?, Error?) -> Void) {
+        if (icao24.characters.count != 6) {
+            return
+        }
+        
+        var req = URLRequest(url: URL(string: "https://opensky-network.org/api/tracks/?icao24=\(icao24)")!)
+        req.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: req) {data, res, err in
+            if err != nil {
+                completionHandler(nil, res, err)
+                return
+            }
+            
+            do {
+                let track = try self.parseTrackApiData(data: data!)
+                completionHandler(track, res, nil)
+            } catch let err {
+                completionHandler(nil, res, err)
+            }
+        }.resume()
+    }
+    
+    func parseTrackApiData(data: Data) throws -> OpenSkyTrack? {
+        let json = try JSONSerialization.jsonObject(with: data, options:.allowFragments) as! [String : AnyObject]
+        
+        if let icao24 = json["icao24"] as? String,
+            let startTime = json["startTime"] as? Double,
+            let endTime = json["endTime"] as? Double,
+            let path = json["path"] as? [[Double]]
+        {
+            let callsign = json["callsign"] as? String
+            return OpenSkyTrack(icao24: icao24, callsign: callsign, startTime: startTime, endTime: endTime, path: path)
+        }
+        else {
+            return nil
+        }
+    }
 }

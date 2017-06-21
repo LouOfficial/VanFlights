@@ -15,6 +15,7 @@ class ViewController: UIViewController {
 
     let originLat = 49.1966913  // YVR
     let originLong = -123.183701
+    let req = OpenSkyRequest()
     
     override func loadView() {
         
@@ -30,7 +31,6 @@ class ViewController: UIViewController {
         view = mapView
         print("loading...")
         
-        let req = OpenSkyRequest()
         req.fetch(coordination: [originLat, originLong]) {data, res, err in
             if err != nil {
                 print("ERR \(err!)")
@@ -46,6 +46,8 @@ class ViewController: UIViewController {
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.map = mapView
+                    
+                    self.drawPath(icao24: s.icao24)
                 }
             }
             
@@ -97,6 +99,14 @@ class ViewController: UIViewController {
 //                print("the \(newFlight) is here")
 //            }
 //        }
+    }
+    
+    func drawPath(icao24: String) {
+        req.fetchDetailBy(icao24: icao24) {data, res, err in
+            if let track = data {
+                print("Detail for the first item: \(track.icao24)")
+            }
+        }
     }
 }
 
