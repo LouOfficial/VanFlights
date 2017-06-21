@@ -9,6 +9,8 @@
 import Foundation
 
 class AirlineCallsignMatcher {
+    
+    // https://en.wikipedia.org/wiki/List_of_airline_codes
     static let dictionary = [
         "AAL": "American Airlines",
         "AAR": "Asiana Airlines",
