@@ -11,7 +11,7 @@ import GoogleMaps
 import GooglePlaces
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, GMSMapViewDelegate {
 
     let originLat = 49.1966913  // YVR
     let originLong = -123.183701
@@ -29,10 +29,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavigationBarItems()
+        
         //          Create a GMSCameraPosition that tells the map to display Vancouver position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
         self.mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         let mapView = self.mapView!
+        mapView.delegate = self
         mapView.isMyLocationEnabled = true
         view = mapView
         print("loading...")
@@ -75,8 +78,21 @@ class ViewController: UIViewController {
         marker.title = "Vancouver"
         marker.snippet = "Canada"
         marker.map = mapView
-        navigationItem.title = "Hello VanFlight"
+      navigationItem.title = "VanFlight"
+        
+    //    navigationItem.title.titleTextAttribute =
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Request Info", style: .plain, target: self, action: #selector(test))
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        
+        navigationController?.navigationBar.barTintColor = UIColor.init(red: 0.110, green: 0.149, blue: 0.318, alpha: 1.0)
+        navigationController?.navigationBar.isTranslucent = false
+        
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+        
+        navigationController?.navigationBar.barStyle = .blackOpaque
+            
+        
         //        create compass button
         mapView.settings.compassButton = true
         
@@ -88,6 +104,9 @@ class ViewController: UIViewController {
         
         startUpdateFlightTimer()
     }
+    
+    
+    
     func test() {
         print("button")
 //        print("loading...")
@@ -157,6 +176,29 @@ class ViewController: UIViewController {
         }
         
         return flight
+    }
+    
+    private func setupNavigationBarItems() {
+      
+//        let planeButton = UIButton(type: .system)
+//        planeButton.setImage(#imageLiteral(resourceName: "Plane1"), for: .normal)
+//        planeButton.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
+//        planeButton.tintColor = UIColor.white
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: planeButton)
+//        
+        let searchButton = UIButton(type: .system)
+        searchButton.setImage(#imageLiteral(resourceName: "Search"), for: .normal)
+        searchButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        searchButton.tintColor = UIColor.white
+        searchButton.contentMode = .scaleAspectFit
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
+        
+
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        print("halou")
+        return false
     }
 }
 
