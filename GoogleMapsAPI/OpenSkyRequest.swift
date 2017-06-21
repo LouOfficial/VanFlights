@@ -10,7 +10,7 @@ import Foundation
 
 class OpenSkyRequest {
     
-    let range = 10.0
+    var range = 2.0
     
     func fetch(coordination: [Double], completionHandler: @escaping ([OpenSkyState]?, URLResponse?, Error?) -> Void) {
         var req = URLRequest(url: URL(string: "https://opensky-network.org/api/states/all")!)
