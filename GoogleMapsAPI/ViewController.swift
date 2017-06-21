@@ -13,6 +13,8 @@ import GooglePlaces
 
 class ViewController: UIViewController {
 
+    let originLat = 49.2827
+    let originLong = -123.1207
     
     override func loadView() {
         
@@ -22,14 +24,14 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         //          Create a GMSCameraPosition that tells the map to display Vancouver position.
-        let camera = GMSCameraPosition.camera(withLatitude: 49.2827, longitude: -123.1207, zoom: 11.0)
+        let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         mapView.isMyLocationEnabled = true
         view = mapView
         print("loading...")
         
         let req = OpenSkyRequest()
-        req.fetch(coordination: [49.2827, -123.1207]) {data, res, err in
+        req.fetch(coordination: [originLat, originLong]) {data, res, err in
             if err != nil {
                 print("ERR \(err!)")
                 return
@@ -63,7 +65,7 @@ class ViewController: UIViewController {
         
         //          Creates a marker in the center of the map.
         let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: 49.2827, longitude: -123.1207)
+        marker.position = CLLocationCoordinate2D(latitude: originLat, longitude: originLong)
         marker.title = "Vancouver"
         marker.snippet = "Canada"
         marker.map = mapView
@@ -82,7 +84,7 @@ class ViewController: UIViewController {
         print("loading...")
         
 //        let req = OpenSkyRequest()
-//        req.fetch(coordination: [49.2827, -123.1207]) {data, res, err in
+//        req.fetch(coordination: [originLat, originLong]) {data, res, err in
 //            if err != nil {
 //                print("ERR \(err!)")
 //                return
