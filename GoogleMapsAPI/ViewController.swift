@@ -40,17 +40,12 @@ class ViewController: UIViewController {
             let queue = DispatchQueue.main
             
             queue.async {
-            
-                print("There are \(data?.count ?? 0) airplane(s) near here!")
                 for s in data! {
-                    self.printState(s)
                     let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
                     let newFlight = GMSMarker(position: planePosition)
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.map = mapView
-                    
-                    print("the \(newFlight) is here")
                 }
             }
             
@@ -81,8 +76,9 @@ class ViewController: UIViewController {
         mapView.animate(toZoom: 12)
     }
     func test() {
-        print("loading...")
-        
+        print("button")
+//        print("loading...")
+//        
 //        let req = OpenSkyRequest()
 //        req.fetch(coordination: [originLat, originLong]) {data, res, err in
 //            if err != nil {
@@ -92,7 +88,6 @@ class ViewController: UIViewController {
 //            
 //            print("There are \(data?.count ?? 0) airplane(s) near here!")
 //            for s in data! {
-//                self.printState(s)
 //                let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
 //                let newFlight = GMSMarker(position: planePosition)
 //                newFlight.title = s.icao24
@@ -102,33 +97,6 @@ class ViewController: UIViewController {
 //                print("the \(newFlight) is here")
 //            }
 //        }
-    }
-
-    
-    func printState(_ s: OpenSkyState) {
-        var message = s.originCountry
-        
-        if let long = s.longitude, let lat = s.latitude {
-            message += " [\(long),\(lat)]"
-        }
-        else {
-            message += " (Unknown place)"
-        }
-        
-        if let a = s.airline {
-            message += " by \(a)"
-        }
-        else {
-            message += " by Unknown Airline"
-            
-            if let c = s.callsign {
-                if !c.isEmpty {
-                    message += " (\(c))"
-                }
-            }
-        }
-        
-        print(message)
     }
 }
 
