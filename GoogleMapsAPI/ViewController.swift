@@ -135,11 +135,12 @@ class ViewController: UIViewController {
     func buildFirstPath(state: OpenSkyState) {
         req.fetchDetailBy(icao24: state.icao24) {data, res, err in
             if let track = data {
-                let flight = self.createFlightFromApiData(state: state, track: track)
-                self.flights[state.icao24] = flight
-                
                 DispatchQueue.main.async {
-                    self.drawPath(for: flight)
+                    let flight = self.createFlightFromApiData(state: state, track: track)
+                    self.flights[state.icao24] = flight
+                
+                    flight.line.map = self.mapView
+                    flight.updateLine()
                 }
             }
         }
@@ -156,15 +157,6 @@ class ViewController: UIViewController {
         }
         
         return flight
-    }
-    
-    func drawPath(for flight: Flight) {
-        let path = GMSMutablePath()
-        for coord in flight.recentPath {
-            path.add(CLLocationCoordinate2D(latitude: coord[0], longitude: coord[1]))
-        }
-        let polyline = GMSPolyline(path: path)
-        polyline.map = self.mapView
     }
 }
 

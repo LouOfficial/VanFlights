@@ -7,10 +7,13 @@
 //
 
 import Foundation
+import GoogleMaps
 
 class Flight {
     let icao24: String
     var path = [[Double]]()
+    var marker = GMSMarker()
+    var line = GMSPolyline()
     
     var recentPath: [[Double]] {
         get  {
@@ -38,5 +41,13 @@ class Flight {
     
     func stretchPath(lat: Double, long: Double) {
         path.append([lat, long])
+    }
+    
+    func updateLine() {
+        let path = GMSMutablePath()
+        for coord in recentPath {
+            path.add(CLLocationCoordinate2D(latitude: coord[0], longitude: coord[1]))
+        }
+        line.path = path
     }
 }
