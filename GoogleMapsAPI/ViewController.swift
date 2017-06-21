@@ -13,8 +13,8 @@ import GooglePlaces
 
 class ViewController: UIViewController {
 
-    let originLat = 49.2827
-    let originLong = -123.1207
+    let originLat = 49.1966913  // YVR
+    let originLong = -123.183701
     
     override func loadView() {
         
