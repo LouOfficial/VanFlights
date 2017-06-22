@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //          Create a GMSCameraPosition that tells the map to display Vancouver position.
+        //          Create a GMSCameraPosition that tells the map to display YVR position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
         self.mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         let mapView = self.mapView!
@@ -54,8 +54,6 @@ class ViewController: UIViewController {
                     self.buildPath(state: s)
                 }
             }
-            
-            
         }
         
         if let mylocation = mapView.myLocation {
@@ -71,7 +69,7 @@ class ViewController: UIViewController {
         marker.snippet = "Canada"
         marker.map = mapView
         navigationItem.title = "Hello VanFlight"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Request Info", style: .plain, target: self, action: #selector(test))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(test))
         //        create compass button
         mapView.settings.compassButton = true
         
@@ -81,28 +79,31 @@ class ViewController: UIViewController {
         // animate zoom
         mapView.animate(toZoom: 12)
     }
+    
     func test() {
-        print("button")
-//        print("loading...")
-//        
-//        let req = OpenSkyRequest()
-//        req.fetch(coordination: [originLat, originLong]) {data, res, err in
-//            if err != nil {
-//                print("ERR \(err!)")
-//                return
-//            }
-//            
-//            print("There are \(data?.count ?? 0) airplane(s) near here!")
-//            for s in data! {
-//                let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
-//                let newFlight = GMSMarker(position: planePosition)
-//                newFlight.title = s.icao24
-//                newFlight.icon = UIImage(named: "1498012390_one_way.png")
-//                newFlight.map = GMSMapView()
-//                                
-//                print("the \(newFlight) is here")
-//            }
-//        }
+        print("Refreshing...")
+        
+        req.fetch(coordination: [originLat, originLong]) {data, res, err in
+            if err != nil {
+                print("ERR \(err!)")
+                return
+            }
+            
+            let queue = DispatchQueue.main
+            
+            queue.async {
+                for s in data! {
+                    let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
+                    let newFlight = GMSMarker(position: planePosition)
+                    newFlight.title = s.icao24
+                    newFlight.icon = UIImage(named: "Plane1")
+                    newFlight.rotation = s.heading!
+                    newFlight.map = self.mapView
+                    
+                    self.buildPath(state: s)
+                }
+            }
+        }
     }
     
     func buildPath(state: OpenSkyState) {
