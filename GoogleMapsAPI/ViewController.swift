@@ -177,7 +177,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func createFlightFromApiData(state: OpenSkyState, track: OpenSkyTrack) -> Flight {
-        let flight = Flight(icao24: state.icao24)
+        let flight = Flight(state: state)
         
         let coordinations = track.path.map{c in [c[1], c[2]]}
         flight.initPath(coordinations)
@@ -213,7 +213,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         }
         
         if let icao24 = marker.userData as? String {
-            activate(flight: flights[icao24])
+            let flight = flights[icao24]
+            print(flight?.state.airline ?? flight?.state.icao24 ?? "?")  // TODO remove me
+            activate(flight: flight)
         }
         return false
     }
