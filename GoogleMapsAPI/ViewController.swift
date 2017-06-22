@@ -11,13 +11,17 @@ import GoogleMaps
 import GooglePlaces
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, GMSMapViewDelegate {
 
     let originLat = 49.1966913  // YVR
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
     var mapView: GMSMapView?
+    var markers = [String: GMSMarker]()
+    var flights = [String: Flight]()
+    var activeFlight: Flight? = nil
+    var timerUpdateFlights = Timer()
     
     override func loadView() {
         
@@ -30,6 +34,7 @@ class ViewController: UIViewController {
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
         self.mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         let mapView = self.mapView!
+        mapView.delegate = self
         mapView.isMyLocationEnabled = true
         view = mapView
         print("loading...")
@@ -49,9 +54,12 @@ class ViewController: UIViewController {
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.rotation = s.heading!
+                    newFlight.userData = s.icao24
                     newFlight.map = mapView
                     
-                    self.buildPath(state: s)
+                    self.markers[s.icao24] = newFlight
+                    
+                    self.buildFirstPath(state: s)
                 }
             }
         }
@@ -78,6 +86,8 @@ class ViewController: UIViewController {
         
         // animate zoom
         mapView.animate(toZoom: 12)
+        
+        startUpdateFlightTimer()
     }
     
     func test() {
@@ -106,28 +116,89 @@ class ViewController: UIViewController {
         }
     }
     
-    func buildPath(state: OpenSkyState) {
+    func startUpdateFlightTimer() {
+        stopUpdateFlightTimer()
+        
+        timerUpdateFlights = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(updateFlights), userInfo: nil, repeats: true)
+    }
+    
+    func stopUpdateFlightTimer() {
+        timerUpdateFlights.invalidate()
+    }
+    
+    func updateFlights() {
+        print("updateFlights")
+        for (icao24, flight) in flights {
+            // TODO
+            print("\(icao24), \(flight.recentPath.count)")
+//            marker.position.latitude += 0.0
+//            marker.position.longitude += 0.0
+        }
+    }
+    
+    func buildFirstPath(state: OpenSkyState) {
         req.fetchDetailBy(icao24: state.icao24) {data, res, err in
-            if let track = data, let lat = state.latitude, let long = state.longitude {
+            if let track = data {
                 DispatchQueue.main.async {
-                    var coordinations = [[Double]]()
-                    for i in track.path {
-                        coordinations.append([i[1], i[2]])
-                    }
-                    coordinations.append([lat, long])
-                    self.drawPath(state: state, coordinations: coordinations)
+                    let flight = self.createFlightFromApiData(state: state, track: track)
+                    self.flights[state.icao24] = flight
+                
+                    flight.line.map = self.mapView
+                    flight.updateLine()
                 }
             }
         }
     }
     
-    func drawPath(state: OpenSkyState, coordinations: [[Double]]) {
-        let path = GMSMutablePath()
-        for coordination in coordinations {
-            path.add(CLLocationCoordinate2D(latitude: coordination[0], longitude: coordination[1]))
+    func createFlightFromApiData(state: OpenSkyState, track: OpenSkyTrack) -> Flight {
+        let flight = Flight(icao24: state.icao24)
+        
+        let coordinations = track.path.map{c in [c[1], c[2]]}
+        flight.initPath(coordinations)
+        
+        if let lat = state.latitude, let long = state.longitude {
+            flight.stretchPath(lat: lat, long: long)
         }
-        let polyline = GMSPolyline(path: path)
-        polyline.map = self.mapView
+        
+        return flight
+    }
+    
+    private func setupNavigationBarItems() {
+      
+//        let planeButton = UIButton(type: .system)
+//        planeButton.setImage(#imageLiteral(resourceName: "Plane1"), for: .normal)
+//        planeButton.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
+//        planeButton.tintColor = UIColor.white
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: planeButton)
+//        
+        let searchButton = UIButton(type: .system)
+        searchButton.setImage(#imageLiteral(resourceName: "Search"), for: .normal)
+        searchButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        searchButton.tintColor = UIColor.white
+        searchButton.contentMode = .scaleAspectFit
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
+        
+
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        if let icao24 = marker.userData as? String {
+            activate(flight: flights[icao24])
+        }
+        return false
+    }
+    
+    func activate(flight: Flight?) {
+        // deactivate old one
+        if let f = activeFlight {
+            f.isActive = false
+        }
+        
+        // activate this one
+        if let f = flight {
+            f.isActive = true
+            activeFlight = f
+        }
     }
 }
 
