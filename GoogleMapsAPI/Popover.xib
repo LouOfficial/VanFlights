@@ -19,12 +19,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="307"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view alpha="0.90000000000000002" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9M3-71-nja">
-                    <rect key="frame" x="0.0" y="288" width="375" height="379"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <view alpha="0.90000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9M3-71-nja">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="307"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bkF-UQ-y1Z">
                             <rect key="frame" x="31" y="0.0" width="312" height="162"/>
@@ -90,7 +89,14 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
-            <point key="canvasLocation" x="33.5" y="75.5"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="9M3-71-nja" secondAttribute="bottom" id="0Ep-61-KRm"/>
+                <constraint firstAttribute="trailing" secondItem="9M3-71-nja" secondAttribute="trailing" id="1SD-tp-ljy"/>
+                <constraint firstItem="9M3-71-nja" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="tgH-4d-SPd"/>
+                <constraint firstItem="9M3-71-nja" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="xkx-ef-IOF"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="33.5" y="255.5"/>
         </view>
     </objects>
 </document>

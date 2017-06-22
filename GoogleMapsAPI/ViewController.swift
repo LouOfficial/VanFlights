@@ -17,12 +17,13 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
-    var mapView: GMSMapView?
+    var mapView: GMSMapView?  // TODO replace with !
     var popoverView = PopoverView()
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
     var activeFlight: Flight? = nil
     var timerUpdateFlights = Timer()
+    var popoverViewTopConstraint = NSLayoutConstraint()
     
     override func loadView() {
         
@@ -105,15 +106,43 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         // animate zoom
         mapView.animate(toZoom: 12)
         
-        preparePopover()
         startUpdateFlightTimer()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        preparePopover()
     }
     
     func preparePopover() {
         let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         popoverView = PopoverView(frame: frame)
+        popoverView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(popoverView)
+        
+        popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        let height = view.frame.height / 2
+        popoverViewTopConstraint = popoverView.topAnchor.constraint(equalTo: view.bottomAnchor)
+        popoverViewTopConstraint.isActive = true
+        popoverView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        
+        // TODO update height when rotated
+    }
+    
+    func openPopover() {
+        UIView.animate(withDuration: 0.3) {
+            self.popoverViewTopConstraint.constant = -self.popoverView.frame.height
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func closePopover() {
+        UIView.animate(withDuration: 0.3) {
+            self.popoverViewTopConstraint.constant = 0
+            self.view.layoutIfNeeded()
+        }
     }
     
     
@@ -206,10 +235,6 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        UIView.animate(withDuration: 1.0) {
-            self.popoverView.frame.origin.y -= self.popoverView.frame.height
-        }
-        
         if let icao24 = marker.userData as? String {
             let flight = flights[icao24]
             if let f = flight {
@@ -230,6 +255,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         if let f = flight {
             f.isActive = true
             activeFlight = f
+            
+            openPopover()
         }
     }
 }
