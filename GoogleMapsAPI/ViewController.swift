@@ -19,6 +19,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     var mapView: GMSMapView?
     var popoverView = PopoverView()
+    var markers = [String: GMSMarker]()
+    var flights = [String: Flight]()
+    var activeFlight: Flight? = nil
+    var timerUpdateFlights = Timer()
     
     override func loadView() {
         
@@ -102,6 +106,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         mapView.animate(toZoom: 12)
         
         preparePopover()
+        startUpdateFlightTimer()
     }
     
     func preparePopover() {
@@ -205,6 +210,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         UIView.animate(withDuration: 1.0) {
             self.popoverView.frame.origin.y -= self.popoverView.frame.height
+        }
+        
+        if let icao24 = marker.userData as? String {
+            activate(flight: flights[icao24])
         }
         return false
     }
