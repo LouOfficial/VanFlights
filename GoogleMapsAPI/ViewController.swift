@@ -110,7 +110,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
                     newFlight.rotation = s.heading!
                     newFlight.map = self.mapView
                     
-                    self.buildPath(state: s)
+                    self.markers[s.icao24] = newFlight
+                    
+                    self.buildFirstPath(state: s)
                 }
             }
         }
