@@ -30,7 +30,6 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupNavigationBarItems()
         
         //          Create a GMSCameraPosition that tells the map to display Vancouver position.
@@ -52,6 +51,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             
             queue.async {
                 for s in data! {
+                    print(s.originCountry)
                     let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
                     let newFlight = GMSMarker(position: planePosition)
                     newFlight.title = s.icao24
