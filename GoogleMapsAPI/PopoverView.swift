@@ -17,6 +17,8 @@ class PopoverView: UIView {
     
     @IBOutlet weak var longitudeLabel: UILabel!
     
+    @IBOutlet weak var originCountryLabel: UILabel!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         loadXibView()
@@ -37,6 +39,8 @@ class PopoverView: UIView {
         altitudeLabel.text = "\(flight.state.altitude!) ft"
         latitudeLabel.text = "\(flight.state.latitude!) °"
         longitudeLabel.text = "\(flight.state.longitude!) °"
+        originCountryLabel.text = "\(flight.state.originCountry) "
+
 
         
     }

@@ -213,7 +213,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         if let icao24 = marker.userData as? String {
             let flight = flights[icao24]
             if let f = flight {
-                print(f.state.airline ?? f.state.icao24)
+                popoverView.set(flight: f)
             }
             activate(flight: flight)
         }
