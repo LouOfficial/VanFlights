@@ -31,6 +31,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBarItems()
         
         //          Create a GMSCameraPosition that tells the map to display YVR position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
@@ -92,6 +93,44 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         startUpdateFlightTimer()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        preparePopover()
+    }
+    
+    func preparePopover() {
+        let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        popoverView = PopoverView(frame: frame)
+        popoverView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(popoverView)
+        
+        popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        let height = view.frame.height / 2
+        popoverViewTopConstraint = popoverView.topAnchor.constraint(equalTo: view.bottomAnchor)
+        popoverViewTopConstraint.isActive = true
+        popoverView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        
+        // TODO update height when rotated
+    }
+    
+    func openPopover() {
+        UIView.animate(withDuration: 0.3) {
+            self.popoverViewTopConstraint.constant = -self.popoverView.frame.height
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func closePopover() {
+        UIView.animate(withDuration: 0.3) {
+            self.popoverViewTopConstraint.constant = 0
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    
     
     func test() {
         print("Refreshing...")
