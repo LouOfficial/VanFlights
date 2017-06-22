@@ -11,6 +11,7 @@ import GoogleMaps
 
 class Flight {
     static let normalStrokecolor = UIColor(colorLiteralRed: 0.3, green: 0.5, blue: 1.0, alpha: 0.5)
+    static let activeStrokecolor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 1.0, alpha: 0.9)
     
     let icao24: String
     var path = [[Double]]()
@@ -23,6 +24,17 @@ class Flight {
             let startIndex = path.endIndex - min(maxCount, path.count)
             let recents = path[startIndex ..< path.endIndex]
             return Array(recents)
+        }
+    }
+    
+    private var _isActive = false
+    var isActive: Bool {
+        get {
+            return _isActive
+        }
+        set(active) {
+            _isActive = active
+            line.strokeColor = active ? Flight.activeStrokecolor : Flight.normalStrokecolor
         }
     }
     

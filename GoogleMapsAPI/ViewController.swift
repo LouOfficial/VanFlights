@@ -20,6 +20,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     var mapView: GMSMapView?
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
+    var activeFlight: Flight? = nil
     var timerUpdateFlights = Timer()
     
     override func loadView() {
@@ -55,6 +56,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.rotation = s.heading!
+                    newFlight.userData = s.icao24
                     newFlight.map = mapView
                     
                     self.markers[s.icao24] = newFlight
@@ -197,8 +199,23 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        print("halou")
+        if let icao24 = marker.userData as? String {
+            activate(flight: flights[icao24])
+        }
         return false
+    }
+    
+    func activate(flight: Flight?) {
+        // deactivate old one
+        if let f = activeFlight {
+            f.isActive = false
+        }
+        
+        // activate this one
+        if let f = flight {
+            f.isActive = true
+            activeFlight = f
+        }
     }
 }
 
