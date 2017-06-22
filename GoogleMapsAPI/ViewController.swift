@@ -53,9 +53,12 @@ class ViewController: UIViewController, GMSMapViewDelegate {
                     newFlight.title = s.icao24
                     newFlight.icon = UIImage(named: "Plane1")
                     newFlight.rotation = s.heading!
+                    newFlight.userData = s.icao24
                     newFlight.map = mapView
                     
-                    self.buildPath(state: s)
+                    self.markers[s.icao24] = newFlight
+                    
+                    self.buildFirstPath(state: s)
                 }
             }
             
@@ -134,28 +137,51 @@ class ViewController: UIViewController, GMSMapViewDelegate {
 //        }
     }
     
-    func buildPath(state: OpenSkyState) {
+    func startUpdateFlightTimer() {
+        stopUpdateFlightTimer()
+        
+        timerUpdateFlights = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(updateFlights), userInfo: nil, repeats: true)
+    }
+    
+    func stopUpdateFlightTimer() {
+        timerUpdateFlights.invalidate()
+    }
+    
+    func updateFlights() {
+        print("updateFlights")
+        for (icao24, flight) in flights {
+            // TODO
+            print("\(icao24), \(flight.recentPath.count)")
+//            marker.position.latitude += 0.0
+//            marker.position.longitude += 0.0
+        }
+    }
+    
+    func buildFirstPath(state: OpenSkyState) {
         req.fetchDetailBy(icao24: state.icao24) {data, res, err in
-            if let track = data, let lat = state.latitude, let long = state.longitude {
+            if let track = data {
                 DispatchQueue.main.async {
-                    var coordinations = [[Double]]()
-                    for i in track.path {
-                        coordinations.append([i[1], i[2]])
-                    }
-                    coordinations.append([lat, long])
-                    self.drawPath(state: state, coordinations: coordinations)
+                    let flight = self.createFlightFromApiData(state: state, track: track)
+                    self.flights[state.icao24] = flight
+                
+                    flight.line.map = self.mapView
+                    flight.updateLine()
                 }
             }
         }
     }
     
-    func drawPath(state: OpenSkyState, coordinations: [[Double]]) {
-        let path = GMSMutablePath()
-        for coordination in coordinations {
-            path.add(CLLocationCoordinate2D(latitude: coordination[0], longitude: coordination[1]))
+    func createFlightFromApiData(state: OpenSkyState, track: OpenSkyTrack) -> Flight {
+        let flight = Flight(icao24: state.icao24)
+        
+        let coordinations = track.path.map{c in [c[1], c[2]]}
+        flight.initPath(coordinations)
+        
+        if let lat = state.latitude, let long = state.longitude {
+            flight.stretchPath(lat: lat, long: long)
         }
-        let polyline = GMSPolyline(path: path)
-        polyline.map = self.mapView
+        
+        return flight
     }
     
     private func setupNavigationBarItems() {
@@ -181,6 +207,19 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             self.popoverView.frame.origin.y -= self.popoverView.frame.height
         }
         return false
+    }
+    
+    func activate(flight: Flight?) {
+        // deactivate old one
+        if let f = activeFlight {
+            f.isActive = false
+        }
+        
+        // activate this one
+        if let f = flight {
+            f.isActive = true
+            activeFlight = f
+        }
     }
 }
 
