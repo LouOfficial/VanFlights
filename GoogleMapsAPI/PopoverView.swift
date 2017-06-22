@@ -9,8 +9,14 @@
 import UIKit
 
 class PopoverView: UIView {
+    @IBOutlet weak var speedLabel: UILabel!
     
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var altitudeLabel: UILabel!
+    
+    @IBOutlet weak var latitudeLabel: UILabel!
+    
+    @IBOutlet weak var longitudeLabel: UILabel!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         loadXibView()
@@ -26,6 +32,14 @@ class PopoverView: UIView {
         self.addSubview(view)
     }
 
+    func set(flight: Flight) {
+        speedLabel.text = "\(flight.state.velocity!) km"
+        altitudeLabel.text = "\(flight.state.altitude!) ft"
+        latitudeLabel.text = "\(flight.state.latitude!) °"
+        longitudeLabel.text = "\(flight.state.longitude!) °"
+
+        
+    }
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
