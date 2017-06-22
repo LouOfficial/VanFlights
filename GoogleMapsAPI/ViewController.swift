@@ -17,11 +17,13 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
-    var mapView: GMSMapView?
+    var mapView: GMSMapView?  // TODO replace with !
+    var popoverView = PopoverView()
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
     var activeFlight: Flight? = nil
     var timerUpdateFlights = Timer()
+    var popoverViewTopConstraint = NSLayoutConstraint()
     
     override func loadView() {
         
@@ -49,6 +51,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             
             queue.async {
                 for s in data! {
+                    print(s.originCountry)
                     let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
                     let newFlight = GMSMarker(position: planePosition)
                     newFlight.title = s.icao24
@@ -129,10 +132,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateFlights() {
-        print("updateFlights")
         for (icao24, flight) in flights {
             // TODO
-            print("\(icao24), \(flight.recentPath.count)")
 //            marker.position.latitude += 0.0
 //            marker.position.longitude += 0.0
         }
@@ -153,7 +154,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func createFlightFromApiData(state: OpenSkyState, track: OpenSkyTrack) -> Flight {
-        let flight = Flight(icao24: state.icao24)
+        let flight = Flight(state: state)
         
         let coordinations = track.path.map{c in [c[1], c[2]]}
         flight.initPath(coordinations)
@@ -185,7 +186,11 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         if let icao24 = marker.userData as? String {
-            activate(flight: flights[icao24])
+            let flight = flights[icao24]
+            if let f = flight {
+                popoverView.set(flight: f)
+            }
+            activate(flight: flight)
         }
         return false
     }
@@ -200,6 +205,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         if let f = flight {
             f.isActive = true
             activeFlight = f
+            
+            openPopover()
         }
     }
 }

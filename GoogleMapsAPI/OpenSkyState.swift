@@ -52,6 +52,22 @@ class OpenSkyState {
     let heading: Double?
     let verticalRate: Double?
     let airline: String?
+    
+    init() {
+        self.icao24 = ""
+        self.callsign = nil
+        self.originCountry = ""
+        self.timePosition = nil
+        self.timeVelocity = nil
+        self.longitude = nil
+        self.latitude = nil
+        self.altitude = nil
+        self.onGround = false
+        self.velocity = nil
+        self.heading = nil
+        self.verticalRate = nil
+        self.airline = nil
+    }
 
     init(icao24: String, callsign: String?, originCountry: String, timePosition: Double?, timeVelocity: Double?, longitude: Double?, latitude: Double?, altitude: Double?, onGround: Bool, velocity: Double?, heading: Double?, verticalRate: Double?) {
         self.icao24 = icao24

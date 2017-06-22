@@ -13,6 +13,7 @@ class Flight {
     static let normalStrokecolor = UIColor(colorLiteralRed: 0.3, green: 0.5, blue: 1.0, alpha: 0.5)
     static let activeStrokecolor = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 1.0, alpha: 0.9)
     
+    let state: OpenSkyState
     let icao24: String
     var path = [[Double]]()
     var marker = GMSMarker()
@@ -39,11 +40,13 @@ class Flight {
     }
     
     init() {
+        state = OpenSkyState()
         icao24 = ""
     }
     
-    init(icao24: String) {
-        self.icao24 = icao24
+    init(state: OpenSkyState) {
+        self.state = state
+        icao24 = state.icao24
         
         line.strokeColor = Flight.normalStrokecolor
     }
