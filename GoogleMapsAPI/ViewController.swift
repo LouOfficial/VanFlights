@@ -18,6 +18,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let req = OpenSkyRequest()
     
     var mapView: GMSMapView?
+    var popoverView = PopoverView()
     
     override func loadView() {
         
@@ -96,6 +97,15 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         // animate zoom
         mapView.animate(toZoom: 12)
+        
+        preparePopover()
+    }
+    
+    func preparePopover() {
+        let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        popoverView = PopoverView(frame: frame)
+        
+        view.addSubview(popoverView)
     }
     
     
@@ -167,7 +177,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        print("halou")
+        UIView.animate(withDuration: 1.0) {
+            self.popoverView.frame.origin.y -= self.popoverView.frame.height
+        }
         return false
     }
 }
