@@ -153,10 +153,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateFlights() {
-        print("updateFlights")
         for (icao24, flight) in flights {
             // TODO
-            print("\(icao24), \(flight.recentPath.count)")
 //            marker.position.latitude += 0.0
 //            marker.position.longitude += 0.0
         }
@@ -214,7 +212,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         if let icao24 = marker.userData as? String {
             let flight = flights[icao24]
-            print(flight?.state.airline ?? flight?.state.icao24 ?? "?")  // TODO remove me
+            if let f = flight {
+                print(f.state.airline ?? f.state.icao24)
+            }
             activate(flight: flight)
         }
         return false
