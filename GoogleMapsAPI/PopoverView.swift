@@ -95,6 +95,8 @@ class PopoverView: UIView {
         case "Italy":
             flagFileName = "Italy"
             
+            // TODO add "Brazil"
+            
         default:
             flagFileName = "default" // TODO replace with default one
         }
