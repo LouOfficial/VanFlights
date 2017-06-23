@@ -17,7 +17,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
-    var mapView: GMSMapView?  // TODO replace with !
+    var mapView: GMSMapView!
     var popoverView = PopoverView()
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
@@ -109,8 +109,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             popoverViewTopConstraint.constant = popoverOpened ? -height : 0
             popoverViewHeightConstraint.constant = height
             
-            mapView!.padding.left = 0
-            mapView!.padding.bottom = popoverOpened ? height : 0
+            mapView.padding.left = 0
+            mapView.padding.bottom = popoverOpened ? height : 0
         }
         else {
             let width = displayWidth / 2
@@ -118,8 +118,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             popoverViewTopConstraint.constant = popoverOpened ? -displayHeight : 0
             popoverViewHeightConstraint.constant = displayHeight
             
-            mapView!.padding.left = popoverOpened ? width : 0
-            mapView!.padding.bottom = 0
+            mapView.padding.left = popoverOpened ? width : 0
+            mapView.padding.bottom = 0
         }
     }
     
