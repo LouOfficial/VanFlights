@@ -50,6 +50,7 @@ class AirlineCallsignMatcher {
         "VIR": "Virgin Atlantic Airways",
         "VRD": "Virgin America",
         "WJA": "WestJet",
+        "XXX": "Star Tours",  // for dummy data
         ]
     
     static func findBy(callsign: String?) -> String? {

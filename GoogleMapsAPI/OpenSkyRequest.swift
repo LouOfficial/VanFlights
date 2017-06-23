@@ -108,7 +108,7 @@ class DummyDataProvider {
     static func appendDummy(states: inout [OpenSkyState]) {
         states.append(OpenSkyState(icao24: "c023bb", callsign: "ACA854", originCountry: "Canada", timePosition: 1498187307, timeVelocity: 1498187307, longitude: -122.389, latitude: 50.0393, altitude: 7520.94, onGround: false, velocity: 237.84, heading: 42.11, verticalRate: 9.43))
         states.append(OpenSkyState(icao24: "a445f2", callsign: "UAL2423", originCountry: "United States", timePosition: 1498187310, timeVelocity: 1498187310, longitude: -123.5151, latitude: 49.0259, altitude: 3185.16, onGround: false, velocity: 156.68, heading: 206.73, verticalRate: 4.23))
-        states.append(OpenSkyState(icao24: "c080a9", callsign: "WJA1702", originCountry: "Canada", timePosition: 1498187309, timeVelocity: 1498187309, longitude: -122.9662, latitude: 48.5368, altitude: 5532.12, onGround: false, velocity: 201.47, heading: 157.95, verticalRate: 15.93))
+        states.append(OpenSkyState(icao24: "c080a9", callsign: "XXX-WJA1702", originCountry: "Dummy", timePosition: 1498187309, timeVelocity: 1498187309, longitude: -122.9662, latitude: 48.5368, altitude: 5532.12, onGround: false, velocity: 201.47, heading: 157.95, verticalRate: 15.93))
     }
     
     static func getDummyTrack(icao24: String) -> OpenSkyTrack? {
