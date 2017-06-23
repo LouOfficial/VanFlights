@@ -15,6 +15,7 @@ class AirlineCallsignMatcher {
         "AAL": "American Airlines",
         "AAR": "Asiana Airlines",
         "ABW": "AirBridge Cargo",
+        "ACA": "Air Canada",
         "ANA": "All Nippon Airways",
         "ASA": "Alaska Airlines, Inc.",
         "BAW": "British Airways",
