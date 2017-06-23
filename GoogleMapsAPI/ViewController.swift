@@ -17,13 +17,16 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let originLong = -123.183701
     let req = OpenSkyRequest()
     
-    var mapView: GMSMapView?  // TODO replace with !
+    var mapView: GMSMapView!
     var popoverView = PopoverView()
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
     var activeFlight: Flight? = nil
     var timerUpdateFlights = Timer()
+    var popoverViewTrailingConstraint = NSLayoutConstraint()
     var popoverViewTopConstraint = NSLayoutConstraint()
+    var popoverViewHeightConstraint = NSLayoutConstraint()
+    var popoverOpened = false
     
     override func loadView() {
         
@@ -32,49 +35,20 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBarItems()
+        NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
-        //          Create a GMSCameraPosition that tells the map to display Vancouver position.
+        //          Create a GMSCameraPosition that tells the map to display YVR position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
         self.mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         let mapView = self.mapView!
         mapView.delegate = self
         mapView.isMyLocationEnabled = true
+        mapView.settings.rotateGestures = false
+        mapView.settings.tiltGestures = false
+        mapView.padding.top = navigationController!.navigationBar.frame.height
         view = mapView
-        print("loading...")
         
-        req.fetch(coordination: [originLat, originLong]) {data, res, err in
-            if err != nil {
-                print("ERR \(err!)")
-                return
-            }
-            
-            let queue = DispatchQueue.main
-            
-            queue.async {
-                for s in data! {
-                    print(s.originCountry)
-                    let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
-                    let newFlight = GMSMarker(position: planePosition)
-                    newFlight.title = s.icao24
-                    newFlight.icon = UIImage(named: "Plane1")
-                    newFlight.rotation = s.heading!
-                    newFlight.userData = s.icao24
-                    newFlight.map = mapView
-                    
-                    self.markers[s.icao24] = newFlight
-                    
-                    self.buildFirstPath(state: s)
-                }
-            }
-            
-            
-        }
-        
-        if let mylocation = mapView.myLocation {
-            print("User's location: \(mylocation)")
-        } else {
-            print("User's location is unknown")
-        }
+        updateFlights()
         
         //          Creates a marker in the center of the map.
         let marker = GMSMarker()
@@ -82,21 +56,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         marker.title = "Vancouver"
         marker.snippet = "Canada"
         marker.map = mapView
-      navigationItem.title = "VanFlight"
-        
-    //    navigationItem.title.titleTextAttribute =
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Request Info", style: .plain, target: self, action: #selector(test))
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        
-        navigationController?.navigationBar.barTintColor = UIColor.init(red: 0.110, green: 0.149, blue: 0.318, alpha: 1.0)
-        navigationController?.navigationBar.isTranslucent = false
-        
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
-        
-        navigationController?.navigationBar.barStyle = .blackOpaque
-            
-        
+        navigationItem.title = "Hello VanFlight"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(test))
         //        create compass button
         mapView.settings.compassButton = true
         
@@ -113,6 +74,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         preparePopover()
     }
     
+    func rotated() {
+        updatePopoverConstraint()
+    }
+    
     func preparePopover() {
         let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         popoverView = PopoverView(frame: frame)
@@ -120,27 +85,61 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         view.addSubview(popoverView)
         
-        popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        let popoverViewLeadingConstraint = popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        popoverViewLeadingConstraint.isActive = true
+        popoverViewTrailingConstraint = popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        popoverViewTrailingConstraint.isActive = true
 
-        let height = view.frame.height / 2
         popoverViewTopConstraint = popoverView.topAnchor.constraint(equalTo: view.bottomAnchor)
         popoverViewTopConstraint.isActive = true
-        popoverView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        popoverViewHeightConstraint = popoverView.heightAnchor.constraint(equalToConstant: 0)
+        popoverViewHeightConstraint.isActive = true
         
-        // TODO update height when rotated
+        updatePopoverConstraint()
     }
     
-    func openPopover() {
+    func updatePopoverConstraint() {
+        let displayWidth = view.frame.width
+        let displayHeight = view.frame.height - navigationController!.navigationBar.frame.height
+        
+        let isPortlate = displayHeight >= displayWidth
+        if (isPortlate) {
+            let height = displayHeight / 2
+            popoverViewTrailingConstraint.constant = 0
+            popoverViewTopConstraint.constant = popoverOpened ? -height : 0
+            popoverViewHeightConstraint.constant = height
+            
+            mapView.padding.left = 0
+            mapView.padding.bottom = popoverOpened ? height : 0
+        }
+        else {
+            let width = displayWidth / 2
+            popoverViewTrailingConstraint.constant = -width
+            popoverViewTopConstraint.constant = popoverOpened ? -displayHeight : 0
+            popoverViewHeightConstraint.constant = displayHeight
+            
+            mapView.padding.left = popoverOpened ? width : 0
+            mapView.padding.bottom = 0
+        }
+    }
+    
+    func openPopover(flight: Flight?) {
+        activate(flight: flight)
+        popoverView.set(flight: activeFlight)
+        
         UIView.animate(withDuration: 0.3) {
-            self.popoverViewTopConstraint.constant = -self.popoverView.frame.height
+            self.popoverOpened = true
+            self.updatePopoverConstraint()
             self.view.layoutIfNeeded()
         }
     }
     
     func closePopover() {
+        activate(flight: nil)
+        
         UIView.animate(withDuration: 0.3) {
-            self.popoverViewTopConstraint.constant = 0
+            self.popoverOpened = false
+            self.updatePopoverConstraint()
             self.view.layoutIfNeeded()
         }
     }
@@ -148,27 +147,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     
     func test() {
-        print("button")
-//        print("loading...")
-//        
-//        let req = OpenSkyRequest()
-//        req.fetch(coordination: [originLat, originLong]) {data, res, err in
-//            if err != nil {
-//                print("ERR \(err!)")
-//                return
-//            }
-//            
-//            print("There are \(data?.count ?? 0) airplane(s) near here!")
-//            for s in data! {
-//                let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
-//                let newFlight = GMSMarker(position: planePosition)
-//                newFlight.title = s.icao24
-//                newFlight.icon = UIImage(named: "1498012390_one_way.png")
-//                newFlight.map = GMSMapView()
-//                                
-//                print("the \(newFlight) is here")
-//            }
-//        }
+        updateFlights()
     }
     
     func startUpdateFlightTimer() {
@@ -182,10 +161,65 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateFlights() {
-        for (icao24, flight) in flights {
-            // TODO
-//            marker.position.latitude += 0.0
-//            marker.position.longitude += 0.0
+        print("updateFlights()")
+        req.fetch(coordination: [originLat, originLong]) {data, res, err in
+            if err != nil {
+                print("ERR \(err!)")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.updateMarkers(states: data!)
+            }
+        }
+    }
+    
+    func updateMarkers(states: [OpenSkyState]) {
+        var oldMarkers = markers
+        var oldFlights = flights
+        
+        markers = [String: GMSMarker]()
+        flights = [String: Flight]()
+        
+        for s in states {
+            // still available
+            if let m = oldMarkers[s.icao24] {
+                oldMarkers.removeValue(forKey: s.icao24)
+                markers[s.icao24] = m
+                
+                m.position.latitude = s.latitude!
+                m.position.longitude = s.longitude!
+                m.rotation = s.heading!
+                
+                let flight = oldFlights[s.icao24]!
+                flights[s.icao24] = flight
+                
+                flight.stretchPath(lat: s.latitude!, long: s.longitude!)
+                flight.updateLine()
+            }
+            // new commer
+            else {
+                let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
+                let newFlight = GMSMarker(position: planePosition)
+                newFlight.title = s.icao24
+                newFlight.icon = UIImage(named: "Plane1")
+                newFlight.rotation = s.heading!
+                newFlight.userData = s.icao24
+                newFlight.map = mapView
+                
+                markers[s.icao24] = newFlight
+                buildFirstPath(state: s)
+            }
+        }
+        
+        // they have gone
+        for (icao24, m) in oldMarkers {
+            if icao24 == activeFlight?.icao24 {
+                closePopover()
+            }
+            
+            m.map = nil
+            oldFlights[icao24]!.line.map = nil
         }
     }
     
@@ -235,14 +269,19 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        var flight: Flight? = nil
+        
         if let icao24 = marker.userData as? String {
-            let flight = flights[icao24]
-            if let f = flight {
-                popoverView.set(flight: f)
-            }
-            activate(flight: flight)
+            flight = flights[icao24]
         }
+        
+        openPopover(flight: flight)
+        
         return false
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        closePopover()
     }
     
     func activate(flight: Flight?) {
@@ -255,8 +294,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         if let f = flight {
             f.isActive = true
             activeFlight = f
-            
-            openPopover()
+        }
+        else {
+            activeFlight = nil
         }
     }
 }

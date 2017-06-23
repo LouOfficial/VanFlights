@@ -44,15 +44,25 @@ class PopoverView: UIView {
         self.addSubview(view)
     }
 
-    func set(flight: Flight) {
-        speedLabel.text = "\(flight.state.velocity!) km"
-        altitudeLabel.text = "\(flight.state.altitude!) ft"
-        latitudeLabel.text = "\(flight.state.latitude!) °"
-        longitudeLabel.text = "\(flight.state.longitude!) °"
-        originCountryLabel.text = "\(flight.state.originCountry) "
+    func set(flight: Flight?) {
+        if let f = flight {
+            speedLabel.text = "\(f.state.velocity!) km"
+            altitudeLabel.text = "\(f.state.altitude!) ft"
+            latitudeLabel.text = "\(f.state.latitude!) °"
+            longitudeLabel.text = "\(f.state.longitude!) °"
+            originCountryLabel.text = "\(f.state.originCountry) "
 
-        setFlagImage(for: flight.state.originCountry)
-        print("\(flight.state.originCountry)")
+            setFlagImage(for: f.state.originCountry)
+        }
+        else {
+            speedLabel.text = "- km"
+            altitudeLabel.text = "- ft"
+            latitudeLabel.text = "- °"
+            longitudeLabel.text = "- °"
+            originCountryLabel.text = "(N/A)"
+            
+            setFlagImage(for: "")
+        }
     }
     
     func setFlagImage(for countryName: String) {
@@ -62,7 +72,7 @@ class PopoverView: UIView {
         case "Canada":
             flagFileName = "Canada"
         case "United States":
-            flagFileName = "United States"  // TODO replace
+            flagFileName = "United States"
         case "Japan":
             flagFileName = "Japan"
         case "Germany":
@@ -84,17 +94,15 @@ class PopoverView: UIView {
         case "Italy":
             flagFileName = "Italy"
             
+            // TODO add "Brazil"
+            
         default:
-            flagFileName = "default" // TODO replace with default one
+            flagFileName = "default"
         }
         
         flagImageView.layer.borderWidth = 1
         flagImageView.layer.borderColor = UIColor.lightGray.cgColor
         flagImageView.image = UIImage(named: flagFileName)
-        if flagImageView.image == nil {
-            print("oooops")
-        }
-//        flagImageView.image = #imageLiteral(resourceName: "Canada")
     }
     
     /*
