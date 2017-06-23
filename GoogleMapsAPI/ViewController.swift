@@ -50,6 +50,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         print("loading...")
         
         req.fetch(coordination: [originLat, originLong]) {data, res, err in
+            print("loaded.")
+            
             if err != nil {
                 print("ERR \(err!)")
                 return
@@ -59,7 +61,6 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             
             queue.async {
                 for s in data! {
-                    print(s.originCountry)
                     let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
                     let newFlight = GMSMarker(position: planePosition)
                     newFlight.title = s.icao24
@@ -73,12 +74,6 @@ class ViewController: UIViewController, GMSMapViewDelegate {
                     self.buildFirstPath(state: s)
                 }
             }
-        }
-        
-        if let mylocation = mapView.myLocation {
-            print("User's location: \(mylocation)")
-        } else {
-            print("User's location is unknown")
         }
         
         //          Creates a marker in the center of the map.
@@ -181,6 +176,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         print("Refreshing...")
         
         req.fetch(coordination: [originLat, originLong]) {data, res, err in
+            print("Refreshed.")
+            
             if err != nil {
                 print("ERR \(err!)")
                 return

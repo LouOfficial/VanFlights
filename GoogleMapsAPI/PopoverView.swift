@@ -53,7 +53,6 @@ class PopoverView: UIView {
             originCountryLabel.text = "\(f.state.originCountry) "
 
             setFlagImage(for: f.state.originCountry)
-            print("\(f.state.originCountry)")
         }
         else {
             speedLabel.text = "- km"
@@ -73,7 +72,7 @@ class PopoverView: UIView {
         case "Canada":
             flagFileName = "Canada"
         case "United States":
-            flagFileName = "United States"  // TODO replace
+            flagFileName = "United States"
         case "Japan":
             flagFileName = "Japan"
         case "Germany":
@@ -98,16 +97,12 @@ class PopoverView: UIView {
             // TODO add "Brazil"
             
         default:
-            flagFileName = "default" // TODO replace with default one
+            flagFileName = "default"
         }
         
         flagImageView.layer.borderWidth = 1
         flagImageView.layer.borderColor = UIColor.lightGray.cgColor
         flagImageView.image = UIImage(named: flagFileName)
-        if flagImageView.image == nil {
-            print("oooops")
-        }
-//        flagImageView.image = #imageLiteral(resourceName: "Canada")
     }
     
     /*
