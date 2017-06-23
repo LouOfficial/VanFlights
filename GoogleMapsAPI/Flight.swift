@@ -19,15 +19,6 @@ class Flight {
     var marker = GMSMarker()
     var line = GMSPolyline()
     
-    var recentPath: [[Double]] {
-        get  {
-            let maxCount = 10
-            let startIndex = path.endIndex - min(maxCount, path.count)
-            let recents = path[startIndex ..< path.endIndex]
-            return Array(recents)
-        }
-    }
-    
     private var _isActive = false
     var isActive: Bool {
         get {
@@ -64,7 +55,7 @@ class Flight {
     
     func updateLine() {
         let path = GMSMutablePath()
-        for coord in recentPath {
+        for coord in self.path {
             path.add(CLLocationCoordinate2D(latitude: coord[0], longitude: coord[1]))
         }
         line.path = path
