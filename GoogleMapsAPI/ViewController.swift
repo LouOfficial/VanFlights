@@ -18,6 +18,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     let req = OpenSkyRequest()
     
     var mapView: GMSMapView!
+    var yvrMarker: GMSMarker!
     var popoverView = PopoverView()
     var markers = [String: GMSMarker]()
     var flights = [String: Flight]()
@@ -52,8 +53,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         //          Creates a marker in the center of the map.
         let marker = GMSMarker()
+        yvrMarker = marker
         marker.position = CLLocationCoordinate2D(latitude: originLat, longitude: originLong)
-        marker.title = "Vancouver"
+        marker.title = "Vancouver International Airport"
         marker.snippet = "Canada"
         marker.map = mapView
         navigationItem.title = "Hello VanFlight"
@@ -269,13 +271,18 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        var flight: Flight? = nil
-        
-        if let icao24 = marker.userData as? String {
-            flight = flights[icao24]
+        if marker == yvrMarker {
+            closePopover()
         }
-        
-        openPopover(flight: flight)
+        else {
+            var flight: Flight? = nil
+            
+            if let icao24 = marker.userData as? String {
+                flight = flights[icao24]
+            }
+            
+            openPopover(flight: flight)
+        }
         
         return false
     }
