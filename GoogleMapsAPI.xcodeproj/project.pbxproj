@@ -24,6 +24,7 @@
 		0EF5217AB09423F54F27C0C9 /* Pods-GoogleMapsAPI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoogleMapsAPI.release.xcconfig"; path = "Pods/Target Support Files/Pods-GoogleMapsAPI/Pods-GoogleMapsAPI.release.xcconfig"; sourceTree = "<group>"; };
 		7236249A03A910BE86904458 /* Pods_GoogleMapsAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoogleMapsAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98108AA4030A8BB7E34A399D /* Pods-GoogleMapsAPI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoogleMapsAPI.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GoogleMapsAPI/Pods-GoogleMapsAPI.debug.xcconfig"; sourceTree = "<group>"; };
+		A0D8CC021EFC8EC600C2DA16 /* mapStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = mapStyle.json; path = Assets.xcassets/mapStyle.json; sourceTree = "<group>"; };
 		A0F009151EF32A6900D023F6 /* GoogleMapsAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleMapsAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0F009181EF32A6900D023F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A0F0091A1EF32A6900D023F6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -76,6 +77,7 @@
 				A0F0091A1EF32A6900D023F6 /* ViewController.swift */,
 				A0F0091C1EF32A6900D023F6 /* Main.storyboard */,
 				A0F0091F1EF32A6900D023F6 /* Assets.xcassets */,
+				A0D8CC021EFC8EC600C2DA16 /* mapStyle.json */,
 				A0F009211EF32A6900D023F6 /* LaunchScreen.storyboard */,
 				A0F009241EF32A6900D023F6 /* Info.plist */,
 			);
