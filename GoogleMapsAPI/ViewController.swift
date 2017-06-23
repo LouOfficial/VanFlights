@@ -56,8 +56,21 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         marker.title = "Vancouver"
         marker.snippet = "Canada"
         marker.map = mapView
-        navigationItem.title = "Hello VanFlight"
+        navigationItem.title = "VanFlight"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(test))
+        
+        navigationController?.navigationBar.barTintColor = UIColor.init(red: 0.110, green: 0.149, blue: 0.318, alpha: 1.0)
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        
+        UIApplication.shared.statusBarStyle = .lightContent
+        navigationController?.navigationBar.isTranslucent = false
+        
+   //     UINavigationBar.appearance().tintColor = UIColor.white
+        //    UINavigationBar.appearance().barStyle = .blackOpaque
+        
+        
         //        create compass button
         mapView.settings.compassButton = true
         
@@ -258,13 +271,13 @@ class ViewController: UIViewController, GMSMapViewDelegate {
 //        planeButton.tintColor = UIColor.white
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: planeButton)
 //        
-        let searchButton = UIButton(type: .system)
-        searchButton.setImage(#imageLiteral(resourceName: "Search"), for: .normal)
-        searchButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        searchButton.tintColor = UIColor.white
-        searchButton.contentMode = .scaleAspectFit
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
-        
+//        let searchButton = UIButton(type: .system)
+//        searchButton.setImage(#imageLiteral(resourceName: "Search"), for: .normal)
+//        searchButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+//        searchButton.tintColor = UIColor.white
+//        searchButton.contentMode = .scaleAspectFit
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
+//        
 
     }
     
