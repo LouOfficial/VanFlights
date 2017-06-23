@@ -43,6 +43,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         let mapView = self.mapView!
         mapView.delegate = self
         mapView.isMyLocationEnabled = true
+        mapView.settings.rotateGestures = false
+        mapView.settings.tiltGestures = false
         view = mapView
         print("loading...")
         
