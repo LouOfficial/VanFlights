@@ -165,8 +165,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     func updateFlights() {
         print("updateFlights()")
         req.fetch(coordination: [originLat, originLong]) {data, res, err in
-            if err != nil {
-                print("ERR \(err!)")
+            if let e = err {
+                self.printUpdateError(e, response: res as? HTTPURLResponse)
                 return
             }
             
@@ -252,6 +252,14 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         }
         
         return flight
+    }
+    
+    func printUpdateError(_ err: Error, response: HTTPURLResponse?) {
+        NSLog("ERR at updating flights: %@", err.localizedDescription)
+        
+        if let r = response {
+            print(r.statusCode)
+        }
     }
     
     private func setupNavigationBarItems() {
