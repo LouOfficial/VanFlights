@@ -23,7 +23,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     var flights = [String: Flight]()
     var activeFlight: Flight? = nil
     var timerUpdateFlights = Timer()
+    var popoverViewTrailingConstraint = NSLayoutConstraint()
     var popoverViewTopConstraint = NSLayoutConstraint()
+    var popoverViewHeightConstraint = NSLayoutConstraint()
+    var popoverOpened = false
     
     override func loadView() {
         
@@ -32,6 +35,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBarItems()
+        NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
         //          Create a GMSCameraPosition that tells the map to display YVR position.
         let camera = GMSCameraPosition.camera(withLatitude: originLat, longitude: originLong, zoom: 11.0)
@@ -98,6 +102,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         preparePopover()
     }
     
+    func rotated() {
+        updatePopoverConstraint()
+    }
+    
     func preparePopover() {
         let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         popoverView = PopoverView(frame: frame)
@@ -105,20 +113,40 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         view.addSubview(popoverView)
         
-        popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        let popoverViewLeadingConstraint = popoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        popoverViewLeadingConstraint.isActive = true
+        popoverViewTrailingConstraint = popoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        popoverViewTrailingConstraint.isActive = true
 
-        let height = view.frame.height / 2
         popoverViewTopConstraint = popoverView.topAnchor.constraint(equalTo: view.bottomAnchor)
         popoverViewTopConstraint.isActive = true
-        popoverView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        popoverViewHeightConstraint = popoverView.heightAnchor.constraint(equalToConstant: 0)
+        popoverViewHeightConstraint.isActive = true
         
-        // TODO update height when rotated
+        updatePopoverConstraint()
+    }
+    
+    func updatePopoverConstraint() {
+        let displayWidth = view.frame.width
+        let displayHeight = view.frame.height - navigationController!.navigationBar.frame.height
+        
+        let isPortlate = displayHeight >= displayWidth
+        if (isPortlate) {
+            popoverViewTrailingConstraint.constant = 0
+            popoverViewTopConstraint.constant = popoverOpened ? -displayHeight / 2 : 0
+            popoverViewHeightConstraint.constant = displayHeight / 2
+        }
+        else {
+            popoverViewTrailingConstraint.constant = -displayWidth / 2
+            popoverViewTopConstraint.constant = popoverOpened ? -displayHeight : 0
+            popoverViewHeightConstraint.constant = displayHeight
+        }
     }
     
     func openPopover() {
         UIView.animate(withDuration: 0.3) {
-            self.popoverViewTopConstraint.constant = -self.popoverView.frame.height
+            self.popoverOpened = true
+            self.updatePopoverConstraint()
             self.view.layoutIfNeeded()
         }
     }
