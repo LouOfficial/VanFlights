@@ -46,10 +46,34 @@ class PopoverView: UIView {
 
     func set(flight: Flight?) {
         if let f = flight {
-            speedLabel.text = "\(f.state.velocity!) km"
-            altitudeLabel.text = "\(f.state.altitude!) ft"
-            latitudeLabel.text = "\(f.state.latitude!) °"
-            longitudeLabel.text = "\(f.state.longitude!) °"
+            if let v = f.state.velocity {
+                speedLabel.text = "\(v) km"
+            }
+            else {
+                speedLabel.text = "N/A km"
+            }
+            
+            if let v = f.state.altitude {
+                altitudeLabel.text = "\(v) m"
+            }
+            else {
+                altitudeLabel.text = "N/A m"
+            }
+            
+            if let v = f.state.latitude {
+                latitudeLabel.text = "\(v) °"
+            }
+            else {
+                latitudeLabel.text = "N/A °"
+            }
+            
+            if let v = f.state.longitude {
+                longitudeLabel.text = "\(v) °"
+            }
+            else {
+                longitudeLabel.text = "N/A °"
+            }
+            
             originCountryLabel.text = "\(f.state.originCountry) "
 
             setFlagImage(for: f.state.originCountry)
