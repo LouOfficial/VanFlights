@@ -47,34 +47,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         mapView.settings.tiltGestures = false
         mapView.padding.top = navigationController!.navigationBar.frame.height
         view = mapView
-        print("loading...")
         
-        req.fetch(coordination: [originLat, originLong]) {data, res, err in
-            print("loaded.")
-            
-            if err != nil {
-                print("ERR \(err!)")
-                return
-            }
-            
-            let queue = DispatchQueue.main
-            
-            queue.async {
-                for s in data! {
-                    let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
-                    let newFlight = GMSMarker(position: planePosition)
-                    newFlight.title = s.icao24
-                    newFlight.icon = UIImage(named: "Plane1")
-                    newFlight.rotation = s.heading!
-                    newFlight.userData = s.icao24
-                    newFlight.map = mapView
-                    
-                    self.markers[s.icao24] = newFlight
-                    
-                    self.buildFirstPath(state: s)
-                }
-            }
-        }
+        updateFlights()
         
         //          Creates a marker in the center of the map.
         let marker = GMSMarker()
@@ -173,33 +147,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     
     
     func test() {
-        print("Refreshing...")
-        
-        req.fetch(coordination: [originLat, originLong]) {data, res, err in
-            print("Refreshed.")
-            
-            if err != nil {
-                print("ERR \(err!)")
-                return
-            }
-            
-            let queue = DispatchQueue.main
-            
-            queue.async {
-                for s in data! {
-                    let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
-                    let newFlight = GMSMarker(position: planePosition)
-                    newFlight.title = s.icao24
-                    newFlight.icon = UIImage(named: "Plane1")
-                    newFlight.rotation = s.heading!
-                    newFlight.map = self.mapView
-                    
-                    self.markers[s.icao24] = newFlight
-                    
-                    self.buildFirstPath(state: s)
-                }
-            }
-        }
+        updateFlights()
     }
     
     func startUpdateFlightTimer() {
@@ -213,10 +161,65 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateFlights() {
-        for (icao24, flight) in flights {
-            // TODO
-//            marker.position.latitude += 0.0
-//            marker.position.longitude += 0.0
+        print("updateFlights()")
+        req.fetch(coordination: [originLat, originLong]) {data, res, err in
+            if err != nil {
+                print("ERR \(err!)")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.updateMarkers(states: data!)
+            }
+        }
+    }
+    
+    func updateMarkers(states: [OpenSkyState]) {
+        var oldMarkers = markers
+        var oldFlights = flights
+        
+        markers = [String: GMSMarker]()
+        flights = [String: Flight]()
+        
+        for s in states {
+            // still available
+            if let m = oldMarkers[s.icao24] {
+                oldMarkers.removeValue(forKey: s.icao24)
+                markers[s.icao24] = m
+                
+                m.position.latitude = s.latitude!
+                m.position.longitude = s.longitude!
+                m.rotation = s.heading!
+                
+                let flight = oldFlights[s.icao24]!
+                flights[s.icao24] = flight
+                
+                flight.stretchPath(lat: s.latitude!, long: s.longitude!)
+                flight.updateLine()
+            }
+            // new commer
+            else {
+                let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
+                let newFlight = GMSMarker(position: planePosition)
+                newFlight.title = s.icao24
+                newFlight.icon = UIImage(named: "Plane1")
+                newFlight.rotation = s.heading!
+                newFlight.userData = s.icao24
+                newFlight.map = mapView
+                
+                markers[s.icao24] = newFlight
+                buildFirstPath(state: s)
+            }
+        }
+        
+        // they have gone
+        for (icao24, m) in oldMarkers {
+            if icao24 == activeFlight?.icao24 {
+                closePopover()
+            }
+            
+            m.map = nil
+            oldFlights[icao24]!.line.map = nil
         }
     }
     
