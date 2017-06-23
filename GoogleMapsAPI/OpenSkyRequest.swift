@@ -16,6 +16,7 @@ class OpenSkyRequest {
         let url = URL(string: "https://opensky-network.org/api/states/all")!
         URLSession.shared.dataTask(with: url) {data, res, err in
             if err != nil {
+                NSLog("Error in fetching states.")
                 completionHandler(nil, res, err)
                 return
             }
@@ -24,6 +25,7 @@ class OpenSkyRequest {
                 let states = try self.pickUpData(from: data, near: coordination)
                 completionHandler(states, res, nil)
             } catch let err {
+                NSLog("Error in parsing states.")
                 completionHandler(nil, res, err)
             }
         }.resume()
@@ -72,6 +74,7 @@ class OpenSkyRequest {
         
         URLSession.shared.dataTask(with: req) {data, res, err in
             if err != nil {
+                NSLog("Error in fetching track for %@.", icao24)
                 completionHandler(nil, res, err)
                 return
             }
@@ -80,6 +83,7 @@ class OpenSkyRequest {
                 let track = try self.parseTrackApiData(data: data!)
                 completionHandler(track, res, nil)
             } catch let err {
+                NSLog("Error in parse track for %@.", icao24)
                 completionHandler(nil, res, err)
             }
         }.resume()
