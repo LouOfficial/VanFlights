@@ -13,10 +13,8 @@ class OpenSkyRequest {
     var range = 2.0
     
     func fetch(coordination: [Double], completionHandler: @escaping ([OpenSkyState]?, URLResponse?, Error?) -> Void) {
-        var req = URLRequest(url: URL(string: "https://opensky-network.org/api/states/all")!)
-        req.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: req) {data, res, err in
+        let url = URL(string: "https://opensky-network.org/api/states/all")!
+        URLSession.shared.dataTask(with: url) {data, res, err in
             if err != nil {
                 completionHandler(nil, res, err)
                 return
