@@ -15,6 +15,7 @@ class AirlineCallsignMatcher {
         "AAL": "American Airlines",
         "AAR": "Asiana Airlines",
         "ABW": "AirBridge Cargo",
+        "ACA": "Air Canada",
         "ANA": "All Nippon Airways",
         "ASA": "Alaska Airlines, Inc.",
         "BAW": "British Airways",
@@ -50,6 +51,7 @@ class AirlineCallsignMatcher {
         "VIR": "Virgin Atlantic Airways",
         "VRD": "Virgin America",
         "WJA": "WestJet",
+        "XXX": "Star Tours",  // for dummy data
         ]
     
     static func findBy(callsign: String?) -> String? {
