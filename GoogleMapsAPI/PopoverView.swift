@@ -47,7 +47,7 @@ class PopoverView: UIView {
     func set(flight: Flight?) {
         if let f = flight {
             speedLabel.text = "\(f.state.velocity!) km"
-            altitudeLabel.text = "\(f.state.altitude!) ft"
+            altitudeLabel.text = "\(f.state.altitude!) m"
             latitudeLabel.text = "\(f.state.latitude!) °"
             longitudeLabel.text = "\(f.state.longitude!) °"
             originCountryLabel.text = "\(f.state.originCountry) "
