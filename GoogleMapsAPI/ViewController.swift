@@ -295,6 +295,9 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             f.isActive = true
             activeFlight = f
         }
+        else {
+            activeFlight = nil
+        }
     }
 }
 
