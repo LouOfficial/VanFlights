@@ -203,7 +203,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
             else {
                 let planePosition = CLLocationCoordinate2D(latitude: s.latitude!, longitude: s.longitude!)
                 let newFlight = GMSMarker(position: planePosition)
-                newFlight.title = s.icao24
+                newFlight.title = s.airline ?? "N/A"
+                newFlight.snippet = s.callsign
                 newFlight.icon = UIImage(named: "Plane1")
                 newFlight.rotation = s.heading!
                 newFlight.userData = s.icao24
