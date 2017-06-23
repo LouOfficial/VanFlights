@@ -169,7 +169,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         activate(flight: nil)
         
         UIView.animate(withDuration: 0.3) {
-            self.popoverViewTopConstraint.constant = 0
+            self.popoverOpened = false
+            self.updatePopoverConstraint()
             self.view.layoutIfNeeded()
         }
     }
@@ -277,6 +278,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         openPopover(flight: flight)
         
         return false
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        closePopover()
     }
     
     func activate(flight: Flight?) {
