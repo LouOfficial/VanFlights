@@ -143,7 +143,10 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         }
     }
     
-    func openPopover() {
+    func openPopover(flight: Flight?) {
+        activate(flight: flight)
+        popoverView.set(flight: activeFlight)
+        
         UIView.animate(withDuration: 0.3) {
             self.popoverOpened = true
             self.updatePopoverConstraint()
@@ -152,6 +155,8 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func closePopover() {
+        activate(flight: nil)
+        
         UIView.animate(withDuration: 0.3) {
             self.popoverViewTopConstraint.constant = 0
             self.view.layoutIfNeeded()
@@ -252,13 +257,14 @@ class ViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        var flight: Flight? = nil
+        
         if let icao24 = marker.userData as? String {
-            let flight = flights[icao24]
-            if let f = flight {
-                popoverView.set(flight: f)
-            }
-            activate(flight: flight)
+            flight = flights[icao24]
         }
+        
+        openPopover(flight: flight)
+        
         return false
     }
     
@@ -272,8 +278,6 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         if let f = flight {
             f.isActive = true
             activeFlight = f
-            
-            openPopover()
         }
     }
 }
