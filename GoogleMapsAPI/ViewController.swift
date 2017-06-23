@@ -45,6 +45,7 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         mapView.isMyLocationEnabled = true
         mapView.settings.rotateGestures = false
         mapView.settings.tiltGestures = false
+        mapView.padding.top = navigationController!.navigationBar.frame.height
         view = mapView
         print("loading...")
         
@@ -134,14 +135,22 @@ class ViewController: UIViewController, GMSMapViewDelegate {
         
         let isPortlate = displayHeight >= displayWidth
         if (isPortlate) {
+            let height = displayHeight / 2
             popoverViewTrailingConstraint.constant = 0
-            popoverViewTopConstraint.constant = popoverOpened ? -displayHeight / 2 : 0
-            popoverViewHeightConstraint.constant = displayHeight / 2
+            popoverViewTopConstraint.constant = popoverOpened ? -height : 0
+            popoverViewHeightConstraint.constant = height
+            
+            mapView!.padding.left = 0
+            mapView!.padding.bottom = popoverOpened ? height : 0
         }
         else {
-            popoverViewTrailingConstraint.constant = -displayWidth / 2
+            let width = displayWidth / 2
+            popoverViewTrailingConstraint.constant = -width
             popoverViewTopConstraint.constant = popoverOpened ? -displayHeight : 0
             popoverViewHeightConstraint.constant = displayHeight
+            
+            mapView!.padding.left = popoverOpened ? width : 0
+            mapView!.padding.bottom = 0
         }
     }
     
