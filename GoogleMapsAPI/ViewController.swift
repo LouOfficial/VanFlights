@@ -193,11 +193,12 @@ class ViewController: UIViewController, GMSMapViewDelegate {
                 m.position.longitude = s.longitude!
                 m.rotation = s.heading!
                 
-                let flight = oldFlights[s.icao24]!
-                flights[s.icao24] = flight
-                
-                flight.stretchPath(lat: s.latitude!, long: s.longitude!)
-                flight.updateLine()
+                if let flight = oldFlights[s.icao24] {
+                    flights[s.icao24] = flight
+                    
+                    flight.stretchPath(lat: s.latitude!, long: s.longitude!)
+                    flight.updateLine()
+                }
             }
             // new commer
             else {
